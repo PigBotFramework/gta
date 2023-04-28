@@ -1,5 +1,5 @@
-from utils.RegCmd import RegCmd
-from pbf import PBF
+from pbf.utils.RegCmd import RegCmd
+from pbf.controller.PBF import PBF
 import sys, time, traceback, datetime, random, requests
 from io import BytesIO
 
@@ -17,25 +17,22 @@ def is_number(s):
     return False
 
 class gta(PBF):
-    def __enter__(self):
-        return [
-            RegCmd(
-                name = "查询",
-                usage = "查询id",
-                permission = "anyone",
-                function = "gta@gta5RockStarID",
-                description = "查询rockstar id",
-                mode = "G  T  A  5",
-                hidden = 0,
-                type = "command"
-            )
-        ]
-    
+    @RegCmd(
+        name = "查询",
+        usage = "查询id",
+        permission = "anyone",
+        description = "查询rockstar id",
+        mode = "G  T  A  5"
+    )
     def gta5RockStarID(self):
         try:
             self.client.msg().raw("正在处理...")
-            from utils.pillow.build_image import BuildImage
-            from paddleocr import PaddleOCR
+            from pbf.utils.pillow.build_image import BuildImage
+            try:
+                from paddleocr import PaddleOCR
+            except ImportError:
+                self.installPackage("paddleocr")
+                from paddleocr import PaddleOCR
             
             captcha = "https://gta.julym.com/captcha.php?r=1134302707"
             send = "https://gta.julym.com/send.php?authcode={}&name={}".format("{}", self.data.message)

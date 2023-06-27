@@ -1,13 +1,16 @@
-from pbf.utils.RegCmd import RegCmd
-from pbf.controller.PBF import PBF
-import sys, time, traceback, datetime, random, requests
+import requests
+import traceback
 from io import BytesIO
+
+from pbf.controller.PBF import PBF
+from pbf.utils.RegCmd import RegCmd
 
 _name = "GTA5"
 _version = "1.0.0"
 _description = "GTA5"
 _author = "xzyStudio"
 _cost = 0.00
+
 
 def is_number(s):
     try:
@@ -16,13 +19,14 @@ def is_number(s):
         pass
     return False
 
+
 class gta(PBF):
     @RegCmd(
-        name = "查询",
-        usage = "查询id",
-        permission = "anyone",
-        description = "查询rockstar id",
-        mode = "G  T  A  5"
+        name="查询",
+        usage="查询id",
+        permission="anyone",
+        description="查询rockstar id",
+        mode="G  T  A  5"
     )
     def gta5RockStarID(self):
         try:
@@ -33,17 +37,17 @@ class gta(PBF):
             except ImportError:
                 self.installPackage("paddleocr")
                 from paddleocr import PaddleOCR
-            
+
             captcha = "https://gta.julym.com/captcha.php?r=1134302707"
             send = "https://gta.julym.com/send.php?authcode={}&name={}".format("{}", self.data.message)
             s = requests.session()
-            
+
             image = BuildImage.open(BytesIO(s.get(url=captcha).content))
-            image = image.resize_canvas((image.width, image.height-10), direction="north")
-            image = image.resize((image.width+10, image.height+10), bg_color="#fff")
+            image = image.resize_canvas((image.width, image.height - 10), direction="north")
+            image = image.resize((image.width + 10, image.height + 10), bg_color="#fff")
             data = image.save("png").getvalue()
-            
-            result = PaddleOCR(use_angle_cls = True,use_gpu= False).ocr(data, cls=True)
+
+            result = PaddleOCR(use_angle_cls=True, use_gpu=False).ocr(data, cls=True)
             str = result[0][-1][-1][0]
             # self.send(str)
             numList = []
@@ -65,7 +69,7 @@ class gta(PBF):
                     num -= i
                 elif '/' in str:
                     num /= i
-            
+
             send = send.format(num)
             data = s.get(url=send).content.decode()
             self.client.msg().raw(data)

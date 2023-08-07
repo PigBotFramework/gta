@@ -4,6 +4,7 @@ from io import BytesIO
 
 from pbf.controller.PBF import PBF
 from pbf.utils.RegCmd import RegCmd
+from pbf.statement.XmlStatement import XmlStatement
 
 _name = "GTA5"
 _version = "1.0.0"
@@ -21,6 +22,24 @@ def is_number(s):
 
 
 class gta(PBF):
+    @RegCmd(
+        name = " test",
+        usage = "",
+        permission = "owner",
+        description = "test",
+        mode = "test",
+        hidden = 1
+    )
+    def test(self):
+        self.client.msg(
+            XmlStatement("""<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<msg serviceID="1">
+<item layout="4">
+<title>testtitle</title>
+</item>
+</msg>""")
+        ).send()
+
     @RegCmd(
         name="查询",
         usage="查询id",
